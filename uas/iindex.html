@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Login OOP</title>
+    <style>
+        :root { --primary: #007bff; --success: #28a745; --danger: #dc3545; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-login { background: var(--primary); color: white; }
+        .btn-logout { background: var(--danger); color: white; margin-top: 20px; }
+        .hidden { display: none; }
+        .user-info { font-size: 1.5rem; color: #333; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-page">
+        <h2>Login Sistem</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button class="btn-login" onclick="app.login()">Masuk</button>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 15px;">
+            Demo: admin (123), budi (abc), siti (rahasia)
+        </p>
+    </div>
+
+    <div id="dashboard-page" class="hidden">
+        <div class="user-info" id="greeting"></div>
+        <p>Anda berhasil masuk ke sistem menggunakan JSON LocalStorage.</p>
+        <button class="btn-logout" onclick="app.logout()">Keluar</button>
+    </div>
+</div>
+
+<script>
+    // 1. Class User sebagai Model
+    class User {
+        constructor(username, password, fullName) {
+            this.username = username;
+            this.password = password;
+            this.fullName = fullName;
+        }
+    }
+
+    // 2. Class AuthSystem sebagai Controller (PBO)
+    class AuthSystem {
+        constructor() {
+            this.storageKey = 'db_users';
+            this.currentUser = null;
+            this.initDatabase();
+        }
+
+        // Inisialisasi Database JSON di Local Storage
+        initDatabase() {
+            if (!localStorage.getItem(this.storageKey)) {
+                const initialUsers = [
+                    new User('admin', '123', 'Administrator Utama'),
+                    new User('budi', 'abc', 'Budi Santoso'),
+                    new User('siti', 'rahasia', 'Siti Aminah')
+                ];
+                localStorage.setItem(this.storageKey, JSON.stringify(initialUsers));
+            }
+        }
+
+        // Logika Login
+        login() {
+            const userIn = document.getElementById('username').value;
+            const passIn = document.getElementById('password').value;
+
+            const usersData = JSON.parse(localStorage.getItem(this.storageKey));
+            
+            // Mencari user yang cocok
+            const foundUser = usersData.find(u => u.username === userIn && u.password === passIn);
+
+            if (foundUser) {
+                this.currentUser = foundUser;
+                this.showPage('dashboard');
+            } else {
+                alert("Gagal Login! Username atau Password salah.");
+            }
+        }
+
+        // Logika Logout
+        logout() {
+            this.currentUser = null;
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            this.showPage('login');
+        }
+
+        // Navigasi Halaman (UI Management)
+        showPage(page) {
+            const loginPage = document.getElementById('login-page');
+            const dashboardPage = document.getElementById('dashboard-page');
+            const greeting = document.getElementById('greeting');
+
+            if (page === 'dashboard') {
+                loginPage.classList.add('hidden');
+                dashboardPage.classList.remove('hidden');
+                greeting.innerText = `Hi: ${this.currentUser.fullName}`;
+            } else {
+                loginPage.classList.remove('hidden');
+                dashboardPage.classList.add('hidden');
+            }
+        }
+    }
+
+    // Inisialisasi Objek Aplikasi
+    const app = new AuthSystem();
+</script>
+
+</body>
+</html>
