@@ -92,7 +92,7 @@ class DatabaseUser {
     init() {
         if (!localStorage.getItem(this.key)) {
             const users = [
-                { username: "vera", password: "123" },
+                { username: "Istrinya Taehyung", password: "123" },
                 { username: "admin", password: "admin123" },
                 { username: "user", password: "user123" }
             ];
@@ -125,7 +125,7 @@ class App {
         if (user) {
             document.getElementById("loginPage").style.display = "none";
             document.getElementById("userPage").style.display = "block";
-            document.getElementById("welcome").innerText = "Hi : " + user.username;
+            document.getElementById("welcome").innerText = "Hello : " + user.username;
         } else {
             alert("❌ Gagal login!");
         }
