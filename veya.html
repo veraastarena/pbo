@@ -2,89 +2,86 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Login & Daftar (Tab)</title>
+<title>Login & Daftar Akun</title>
+
 <style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(135deg, #7b2ff7, #f107a3);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#7b2ff7,#f107a3);
+    font-family:'Segoe UI', sans-serif;
+}
 
-    .card {
-        background: #fff;
-        width: 380px;
-        padding: 30px;
-        border-radius: 18px;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-        text-align: center;
-    }
+.card{
+    width:380px;
+    background:#fff;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    text-align:center;
+}
 
-    .tabs {
-        display: flex;
-        margin-bottom: 20px;
-        border-radius: 10px;
-        overflow: hidden;
-        border: 1px solid #ddd;
-    }
+.tabs{
+    display:flex;
+    margin-bottom:20px;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid #ddd;
+}
 
-    .tab {
-        flex: 1;
-        padding: 12px;
-        cursor: pointer;
-        font-weight: 600;
-        background: #f2f2f2;
-        transition: 0.3s;
-    }
+.tab{
+    flex:1;
+    padding:12px;
+    cursor:pointer;
+    font-weight:600;
+    background:#eee;
+}
 
-    .tab.active {
-        background: #7b2ff7;
-        color: white;
-    }
+.tab.active{
+    background:#7b2ff7;
+    color:white;
+}
 
-    input {
-        width: 100%;
-        padding: 12px;
-        margin: 8px 0;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-    }
+input{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
 
-    .btn-group {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 18px;
-    }
+.btn-group{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
 
-    button {
-        padding: 12px;
-        width: 48%;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-        border: none;
-        transition: 0.3s;
-    }
+button{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:14px;
+    cursor:pointer;
+}
 
-    .btn-login {
-        background: #7b2ff7;
-        color: white;
-    }
+.btn-login{
+    background:#7b2ff7;
+    color:white;
+}
 
-    .btn-cancel {
-        background: #e74c3c;
-        color: white;
-    }
+.btn-cancel{
+    background:#e74c3c;
+    color:white;
+}
 
-    .btn-login:hover { background: #6923d4; }
-    .btn-cancel:hover { background: #c0392b; }
-
-    .success { color: #2ecc71; margin-top: 10px; }
-    .error { color: red; margin-top: 10px; }
+.success{
+    color:#2ecc71;
+    margin-top:15px;
+}
 </style>
 </head>
 <body>
@@ -99,8 +96,8 @@
 
     <!-- LOGIN -->
     <div id="loginForm">
-        <input type="text" id="loginUser" placeholder="Username">
-        <input type="password" id="loginPass" placeholder="Password">
+        <input id="loginUser" placeholder="Username">
+        <input id="loginPass" type="password" placeholder="Password">
 
         <div class="btn-group">
             <button class="btn-login" onclick="app.login()">Login</button>
@@ -108,11 +105,11 @@
         </div>
     </div>
 
-    <!-- REGISTER -->
+    <!-- DAFTAR -->
     <div id="registerForm" style="display:none;">
-        <input type="text" id="regUser" placeholder="Username">
-        <input type="text" id="regName" placeholder="Nama Lengkap">
-        <input type="password" id="regPass" placeholder="Password">
+        <input id="regUser" placeholder="Username">
+        <input id="regName" placeholder="Nama Lengkap">
+        <input id="regPass" type="password" placeholder="Password">
 
         <div class="btn-group">
             <button class="btn-login" onclick="app.register()">Daftar</button>
@@ -132,27 +129,27 @@
 
 <script>
 /* ======================
-   DATABASE (OOP)
+   DATABASE USER (OOP)
 ====================== */
 class DatabaseUser {
-    constructor() {
+    constructor(){
         this.key = "db_user";
         this.init();
     }
 
-    init() {
-        if (!localStorage.getItem(this.key)) {
+    init(){
+        if(!localStorage.getItem(this.key)){
             localStorage.setItem(this.key, JSON.stringify([
-                { username:"vera", password:"123", fullname:"Vera Astarena" }
+                {username:"vera", password:"123", fullname:"Vera Astarena"}
             ]));
         }
     }
 
-    getUsers() {
+    getUsers(){
         return JSON.parse(localStorage.getItem(this.key));
     }
 
-    save(users) {
+    save(users){
         localStorage.setItem(this.key, JSON.stringify(users));
     }
 }
@@ -160,77 +157,77 @@ class DatabaseUser {
 /* ======================
    APP (OOP)
 ====================== */
-class App {
-    constructor() {
+class App{
+    constructor(){
         this.db = new DatabaseUser();
     }
 
-    activateTab(index) {
-        document.querySelectorAll(".tab").forEach((t,i)=>{
-            t.classList.toggle("active", i === index);
-        });
+    activateTab(i){
+        document.querySelectorAll(".tab")
+            .forEach((t,idx)=>t.classList.toggle("active", idx===i));
     }
 
-    showLogin() {
+    showLogin(){
         this.activateTab(0);
-        loginForm.style.display = "block";
-        registerForm.style.display = "none";
-        userPage.style.display = "none";
+        loginForm.style.display="block";
+        registerForm.style.display="none";
+        userPage.style.display="none";
     }
 
-    showRegister() {
+    showRegister(){
         this.activateTab(1);
-        loginForm.style.display = "none";
-        registerForm.style.display = "block";
-        userPage.style.display = "none";
+        loginForm.style.display="none";
+        registerForm.style.display="block";
+        userPage.style.display="none";
     }
 
-    login() {
+    login(){
         const u = loginUser.value;
         const p = loginPass.value;
 
         const user = this.db.getUsers()
-            .find(x => x.username === u && x.password === p);
+            .find(x => x.username===u && x.password===p);
 
-        if (user) {
-            loginForm.style.display = "none";
-            registerForm.style.display = "none";
-            userPage.style.display = "block";
-            welcome.innerText = `Hi ${user.fullname}, kamu berhasil login`;
+        if(user){
+            loginForm.style.display="none";
+            registerForm.style.display="none";
+            userPage.style.display="block";
+            welcome.innerText =
+              "hello istri taehyung selamat kamu berhasil log in ke sistem";
         } else {
             alert("❌ Login gagal!");
         }
     }
 
-    register() {
+    register(){
         const u = regUser.value;
         const n = regName.value;
         const p = regPass.value;
 
-        if (!u || !n || !p) {
-            regInfo.innerHTML = "<p class='error'>Semua field wajib diisi!</p>";
+        if(!u || !n || !p){
+            regInfo.innerHTML = "<p style='color:red'>Semua field wajib diisi</p>";
             return;
         }
 
         const users = this.db.getUsers();
-        if (users.some(x => x.username === u)) {
-            regInfo.innerHTML = "<p class='error'>Username sudah ada!</p>";
+        if(users.some(x=>x.username===u)){
+            regInfo.innerHTML = "<p style='color:red'>Username sudah ada</p>";
             return;
         }
 
-        users.push({ username:u, password:p, fullname:n });
+        users.push({username:u,password:p,fullname:n});
         this.db.save(users);
 
         regInfo.innerHTML = "<p class='success'>Akun berhasil dibuat ✔</p>";
-        setTimeout(() => this.showLogin(), 1500);
+        setTimeout(()=>this.showLogin(),1200);
     }
 
-    resetLogin() {
-        loginUser.value = "";
-        loginPass.value = "";
+    resetLogin(){
+        loginUser.value="";
+        loginPass.value="";
     }
 
-    logout() {
+    logout(){
         this.showLogin();
         this.resetLogin();
     }
