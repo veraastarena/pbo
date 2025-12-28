@@ -5,83 +5,113 @@
     <title>Login OOP - Local Storage</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #7b2ff7, #f107a3);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
 
         .card {
             background: white;
-            padding: 25px;
-            width: 300px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 320px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
         }
 
         h2 {
-            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
         }
 
         input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #7b2ff7;
         }
 
         .btn-group {
             display: flex;
             justify-content: space-between;
-            margin-top: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px;
+            width: 48%;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
         .btn-login {
-            background: #2ecc71;
+            background: #7b2ff7;
             color: white;
             border: none;
-            padding: 10px;
-            width: 48%;
-            cursor: pointer;
-            border-radius: 5px;
+        }
+
+        .btn-login:hover {
+            background: #6923d4;
         }
 
         .btn-cancel {
-            background: white;
-            color: black;
-            border: 1px solid #ccc;
-            padding: 10px;
-            width: 48%;
-            cursor: pointer;
-            border-radius: 5px;
+            background: #e74c3c;
+            color: white;
+            border: none;
         }
 
-        .user-page {
-            text-align: center;
+        .btn-cancel:hover {
+            background: #c0392b;
+        }
+
+        .user-page h2 {
+            color: #7b2ff7;
+        }
+
+        .success-text {
+            margin: 15px 0;
+            font-size: 15px;
+            color: #555;
         }
     </style>
 </head>
 <body>
 
+<!-- LOGIN PAGE -->
 <div class="card" id="loginPage">
-    <h2>Login</h2>
+    <h2>Login User</h2>
     <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
+
     <div class="btn-group">
         <button class="btn-login" onclick="app.login()">Login</button>
         <button class="btn-cancel" onclick="app.reset()">Cancel</button>
     </div>
 </div>
 
+<!-- USER PAGE -->
 <div class="card user-page" id="userPage" style="display:none;">
     <h2 id="welcome"></h2>
+    <p class="success-text">Kamu berhasil login ke sistem 🎉</p>
     <button class="btn-login" onclick="app.logout()">Logout</button>
 </div>
 
 <script>
 /* ======================
-   DATABASE (OBJECT)
+   DATABASE USER (OOP)
 ====================== */
 class DatabaseUser {
     constructor() {
@@ -92,9 +122,9 @@ class DatabaseUser {
     init() {
         if (!localStorage.getItem(this.key)) {
             const users = [
-                { username: "Istrinya Taehyung", password: "123" },
-                { username: "admin", password: "admin123" },
-                { username: "user", password: "user123" }
+                { username: "vera", password: "123", fullname: "Vera Astarena" },
+                { username: "admin", password: "admin123", fullname: "Admin Sistem" },
+                { username: "user", password: "user123", fullname: "User Umum" }
             ];
             localStorage.setItem(this.key, JSON.stringify(users));
         }
@@ -106,7 +136,7 @@ class DatabaseUser {
 }
 
 /* ======================
-   APLIKASI (OOP)
+   APLIKASI UTAMA (OOP)
 ====================== */
 class App {
     constructor() {
@@ -125,9 +155,10 @@ class App {
         if (user) {
             document.getElementById("loginPage").style.display = "none";
             document.getElementById("userPage").style.display = "block";
-            document.getElementById("welcome").innerText = "Hello : " + user.username;
+            document.getElementById("welcome").innerText =
+                `Hi ${user.fullname}, kamu berhasil login`;
         } else {
-            alert("❌ Gagal login!");
+            alert("❌ Username atau password salah!");
         }
     }
 
@@ -144,7 +175,7 @@ class App {
 }
 
 /* ======================
-   INISIALISASI APP
+   INISIALISASI
 ====================== */
 const app = new App();
 </script>
