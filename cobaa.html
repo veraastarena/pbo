@@ -1,129 +1,138 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Login & Daftar - OOP Local Storage</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #7b2ff7, #f107a3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+<meta charset="UTF-8">
+<title>Login & Daftar (Tab)</title>
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #7b2ff7, #f107a3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
 
-        .card {
-            background: white;
-            padding: 30px;
-            width: 340px;
-            border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-            text-align: center;
-        }
+    .card {
+        background: #fff;
+        width: 380px;
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        text-align: center;
+    }
 
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
+    .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+    }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
+    .tab {
+        flex: 1;
+        padding: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        background: #f2f2f2;
+        transition: 0.3s;
+    }
 
-        .btn-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 18px;
-        }
+    .tab.active {
+        background: #7b2ff7;
+        color: white;
+    }
 
-        button {
-            padding: 12px;
-            width: 48%;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
-            border: none;
-        }
+    input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
 
-        .btn-login {
-            background: #7b2ff7;
-            color: white;
-        }
+    .btn-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 18px;
+    }
 
-        .btn-login:hover {
-            background: #6923d4;
-        }
+    button {
+        padding: 12px;
+        width: 48%;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+        transition: 0.3s;
+    }
 
-        .btn-cancel {
-            background: #e74c3c;
-            color: white;
-        }
+    .btn-login {
+        background: #7b2ff7;
+        color: white;
+    }
 
-        .btn-cancel:hover {
-            background: #c0392b;
-        }
+    .btn-cancel {
+        background: #e74c3c;
+        color: white;
+    }
 
-        .link {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #7b2ff7;
-            cursor: pointer;
-        }
+    .btn-login:hover { background: #6923d4; }
+    .btn-cancel:hover { background: #c0392b; }
 
-        .success {
-            color: #2ecc71;
-            margin-top: 10px;
-        }
-    </style>
+    .success { color: #2ecc71; margin-top: 10px; }
+    .error { color: red; margin-top: 10px; }
+</style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="card" id="loginPage">
-    <h2>Login</h2>
-    <input type="text" id="loginUser" placeholder="Username">
-    <input type="password" id="loginPass" placeholder="Password">
+<div class="card">
 
-    <div class="btn-group">
-        <button class="btn-login" onclick="app.login()">Login</button>
-        <button class="btn-cancel" onclick="app.resetLogin()">Cancel</button>
+    <!-- TAB -->
+    <div class="tabs">
+        <div class="tab active" onclick="app.showLogin()">Login</div>
+        <div class="tab" onclick="app.showRegister()">Daftar</div>
     </div>
 
-    <div class="link" onclick="app.showRegister()">Belum punya akun? Daftar</div>
-</div>
+    <!-- LOGIN -->
+    <div id="loginForm">
+        <input type="text" id="loginUser" placeholder="Username">
+        <input type="password" id="loginPass" placeholder="Password">
 
-<!-- REGISTER -->
-<div class="card" id="registerPage" style="display:none;">
-    <h2>Daftar Akun</h2>
-    <input type="text" id="regUser" placeholder="Username">
-    <input type="text" id="regName" placeholder="Nama Lengkap">
-    <input type="password" id="regPass" placeholder="Password">
-
-    <div class="btn-group">
-        <button class="btn-login" onclick="app.register()">Daftar</button>
-        <button class="btn-cancel" onclick="app.showLogin()">Batal</button>
+        <div class="btn-group">
+            <button class="btn-login" onclick="app.login()">Login</button>
+            <button class="btn-cancel" onclick="app.resetLogin()">Cancel</button>
+        </div>
     </div>
 
-    <div id="regInfo"></div>
-</div>
+    <!-- REGISTER -->
+    <div id="registerForm" style="display:none;">
+        <input type="text" id="regUser" placeholder="Username">
+        <input type="text" id="regName" placeholder="Nama Lengkap">
+        <input type="password" id="regPass" placeholder="Password">
 
-<!-- USER PAGE -->
-<div class="card" id="userPage" style="display:none;">
-    <h2 id="welcome"></h2>
-    <button class="btn-login" onclick="app.logout()">Logout</button>
+        <div class="btn-group">
+            <button class="btn-login" onclick="app.register()">Daftar</button>
+            <button class="btn-cancel" onclick="app.showLogin()">Batal</button>
+        </div>
+
+        <div id="regInfo"></div>
+    </div>
+
+    <!-- USER -->
+    <div id="userPage" style="display:none;">
+        <h3 id="welcome"></h3>
+        <button class="btn-login" onclick="app.logout()">Logout</button>
+    </div>
+
 </div>
 
 <script>
 /* ======================
-   DATABASE USER (OOP)
+   DATABASE (OOP)
 ====================== */
 class DatabaseUser {
     constructor() {
@@ -133,12 +142,9 @@ class DatabaseUser {
 
     init() {
         if (!localStorage.getItem(this.key)) {
-            const users = [
-                { username: "vera", password: "123", fullname: "Vera Astarena" },
-                { username: "admin", password: "admin123", fullname: "Admin Sistem" },
-                { username: "user", password: "user123", fullname: "User Umum" }
-            ];
-            localStorage.setItem(this.key, JSON.stringify(users));
+            localStorage.setItem(this.key, JSON.stringify([
+                { username:"vera", password:"123", fullname:"Vera Astarena" }
+            ]));
         }
     }
 
@@ -146,43 +152,50 @@ class DatabaseUser {
         return JSON.parse(localStorage.getItem(this.key));
     }
 
-    saveUsers(users) {
+    save(users) {
         localStorage.setItem(this.key, JSON.stringify(users));
     }
 }
 
 /* ======================
-   APLIKASI UTAMA (OOP)
+   APP (OOP)
 ====================== */
 class App {
     constructor() {
         this.db = new DatabaseUser();
     }
 
-    showRegister() {
-        this.toggle("registerPage");
+    activateTab(index) {
+        document.querySelectorAll(".tab").forEach((t,i)=>{
+            t.classList.toggle("active", i === index);
+        });
     }
 
     showLogin() {
-        this.toggle("loginPage");
+        this.activateTab(0);
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+        userPage.style.display = "none";
     }
 
-    toggle(pageId) {
-        ["loginPage", "registerPage", "userPage"].forEach(id => {
-            document.getElementById(id).style.display =
-                id === pageId ? "block" : "none";
-        });
+    showRegister() {
+        this.activateTab(1);
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+        userPage.style.display = "none";
     }
 
     login() {
         const u = loginUser.value;
         const p = loginPass.value;
 
-        const users = this.db.getUsers();
-        const user = users.find(x => x.username === u && x.password === p);
+        const user = this.db.getUsers()
+            .find(x => x.username === u && x.password === p);
 
         if (user) {
-            this.toggle("userPage");
+            loginForm.style.display = "none";
+            registerForm.style.display = "none";
+            userPage.style.display = "block";
             welcome.innerText = `Hi ${user.fullname}, kamu berhasil login`;
         } else {
             alert("❌ Login gagal!");
@@ -195,18 +208,18 @@ class App {
         const p = regPass.value;
 
         if (!u || !n || !p) {
-            regInfo.innerHTML = "<p style='color:red'>Semua field wajib diisi!</p>";
+            regInfo.innerHTML = "<p class='error'>Semua field wajib diisi!</p>";
             return;
         }
 
         const users = this.db.getUsers();
         if (users.some(x => x.username === u)) {
-            regInfo.innerHTML = "<p style='color:red'>Username sudah terdaftar!</p>";
+            regInfo.innerHTML = "<p class='error'>Username sudah ada!</p>";
             return;
         }
 
-        users.push({ username: u, password: p, fullname: n });
-        this.db.saveUsers(users);
+        users.push({ username:u, password:p, fullname:n });
+        this.db.save(users);
 
         regInfo.innerHTML = "<p class='success'>Akun berhasil dibuat ✔</p>";
         setTimeout(() => this.showLogin(), 1500);
@@ -218,14 +231,11 @@ class App {
     }
 
     logout() {
-        this.toggle("loginPage");
+        this.showLogin();
         this.resetLogin();
     }
 }
 
-/* ======================
-   INISIALISASI
-====================== */
 const app = new App();
 </script>
 
