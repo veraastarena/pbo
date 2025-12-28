@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Login OOP - Local Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .btn-login {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 48%;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn-cancel {
+            background: white;
+            color: black;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 48%;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .user-page {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="loginPage">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <div class="btn-group">
+        <button class="btn-login" onclick="app.login()">Login</button>
+        <button class="btn-cancel" onclick="app.reset()">Cancel</button>
+    </div>
+</div>
+
+<div class="card user-page" id="userPage" style="display:none;">
+    <h2 id="welcome"></h2>
+    <button class="btn-login" onclick="app.logout()">Logout</button>
+</div>
+
+<script>
+/* ======================
+   DATABASE (OBJECT)
+====================== */
+class DatabaseUser {
+    constructor() {
+        this.key = "db_user";
+        this.init();
+    }
+
+    init() {
+        if (!localStorage.getItem(this.key)) {
+            const users = [
+                { username: "vera", password: "123" },
+                { username: "admin", password: "admin123" },
+                { username: "user", password: "user123" }
+            ];
+            localStorage.setItem(this.key, JSON.stringify(users));
+        }
+    }
+
+    getUsers() {
+        return JSON.parse(localStorage.getItem(this.key));
+    }
+}
+
+/* ======================
+   APLIKASI (OOP)
+====================== */
+class App {
+    constructor() {
+        this.db = new DatabaseUser();
+    }
+
+    login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const users = this.db.getUsers();
+        const user = users.find(
+            u => u.username === username && u.password === password
+        );
+
+        if (user) {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("userPage").style.display = "block";
+            document.getElementById("welcome").innerText = "Hi : " + user.username;
+        } else {
+            alert("❌ Gagal login!");
+        }
+    }
+
+    reset() {
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+    }
+
+    logout() {
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("userPage").style.display = "none";
+        this.reset();
+    }
+}
+
+/* ======================
+   INISIALISASI APP
+====================== */
+const app = new App();
+</script>
+
+</body>
+</html>
