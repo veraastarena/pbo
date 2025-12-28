@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Login & Daftar (Tab)</title>
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #7b2ff7, #f107a3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .card {
+        background: #fff;
+        width: 380px;
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        text-align: center;
+    }
+
+    .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+    }
+
+    .tab {
+        flex: 1;
+        padding: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        background: #f2f2f2;
+        transition: 0.3s;
+    }
+
+    .tab.active {
+        background: #7b2ff7;
+        color: white;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 18px;
+    }
+
+    button {
+        padding: 12px;
+        width: 48%;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+        transition: 0.3s;
+    }
+
+    .btn-login {
+        background: #7b2ff7;
+        color: white;
+    }
+
+    .btn-cancel {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-login:hover { background: #6923d4; }
+    .btn-cancel:hover { background: #c0392b; }
+
+    .success { color: #2ecc71; margin-top: 10px; }
+    .error { color: red; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+    <!-- TAB -->
+    <div class="tabs">
+        <div class="tab active" onclick="app.showLogin()">Login</div>
+        <div class="tab" onclick="app.showRegister()">Daftar</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginForm">
+        <input type="text" id="loginUser" placeholder="Username">
+        <input type="password" id="loginPass" placeholder="Password">
+
+        <div class="btn-group">
+            <button class="btn-login" onclick="app.login()">Login</button>
+            <button class="btn-cancel" onclick="app.resetLogin()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerForm" style="display:none;">
+        <input type="text" id="regUser" placeholder="Username">
+        <input type="text" id="regName" placeholder="Nama Lengkap">
+        <input type="password" id="regPass" placeholder="Password">
+
+        <div class="btn-group">
+            <button class="btn-login" onclick="app.register()">Daftar</button>
+            <button class="btn-cancel" onclick="app.showLogin()">Batal</button>
+        </div>
+
+        <div id="regInfo"></div>
+    </div>
+
+    <!-- USER -->
+    <div id="userPage" style="display:none;">
+        <h3 id="welcome"></h3>
+        <button class="btn-login" onclick="app.logout()">Logout</button>
+    </div>
+
+</div>
+
+<script>
+/* ======================
+   DATABASE (OOP)
+====================== */
+class DatabaseUser {
+    constructor() {
+        this.key = "db_user";
+        this.init();
+    }
+
+    init() {
+        if (!localStorage.getItem(this.key)) {
+            localStorage.setItem(this.key, JSON.stringify([
+                { username:"vera", password:"123", fullname:"Vera Astarena" }
+            ]));
+        }
+    }
+
+    getUsers() {
+        return JSON.parse(localStorage.getItem(this.key));
+    }
+
+    save(users) {
+        localStorage.setItem(this.key, JSON.stringify(users));
+    }
+}
+
+/* ======================
+   APP (OOP)
+====================== */
+class App {
+    constructor() {
+        this.db = new DatabaseUser();
+    }
+
+    activateTab(index) {
+        document.querySelectorAll(".tab").forEach((t,i)=>{
+            t.classList.toggle("active", i === index);
+        });
+    }
+
+    showLogin() {
+        this.activateTab(0);
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+        userPage.style.display = "none";
+    }
+
+    showRegister() {
+        this.activateTab(1);
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+        userPage.style.display = "none";
+    }
+
+    login() {
+        const u = loginUser.value;
+        const p = loginPass.value;
+
+        const user = this.db.getUsers()
+            .find(x => x.username === u && x.password === p);
+
+        if (user) {
+            loginForm.style.display = "none";
+            registerForm.style.display = "none";
+            userPage.style.display = "block";
+            welcome.innerText = `Hi ${user.fullname}, kamu berhasil login`;
+        } else {
+            alert("❌ Login gagal!");
+        }
+    }
+
+    register() {
+        const u = regUser.value;
+        const n = regName.value;
+        const p = regPass.value;
+
+        if (!u || !n || !p) {
+            regInfo.innerHTML = "<p class='error'>Semua field wajib diisi!</p>";
+            return;
+        }
+
+        const users = this.db.getUsers();
+        if (users.some(x => x.username === u)) {
+            regInfo.innerHTML = "<p class='error'>Username sudah ada!</p>";
+            return;
+        }
+
+        users.push({ username:u, password:p, fullname:n });
+        this.db.save(users);
+
+        regInfo.innerHTML = "<p class='success'>Akun berhasil dibuat ✔</p>";
+        setTimeout(() => this.showLogin(), 1500);
+    }
+
+    resetLogin() {
+        loginUser.value = "";
+        loginPass.value = "";
+    }
+
+    logout() {
+        this.showLogin();
+        this.resetLogin();
+    }
+}
+
+const app = new App();
+</script>
+
+</body>
+</html>
