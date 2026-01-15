@@ -6,9 +6,10 @@
     <title>UAS PBO - Future Login System</title>
     <style>
         :root {
-            --primary-cyan: #00f2ff;
-            --logout-red: #ff4b2b;
+            --primary-purple: #8a2be2; /* Warna Ungu */
+            --danger-red: #ff4b2b;    /* Warna Merah */
             --bg-dark: #060b23;
+            --accent-cyan: #00f2ff;
         }
 
         body {
@@ -32,8 +33,8 @@
             filter: blur(80px);
             z-index: 1;
         }
-        .orb-1 { background: rgba(0, 242, 255, 0.15); top: -10%; left: -10%; }
-        .orb-2 { background: rgba(255, 204, 0, 0.1); bottom: -10%; right: -10%; }
+        .orb-1 { background: rgba(138, 43, 226, 0.2); top: -10%; left: -10%; }
+        .orb-2 { background: rgba(0, 242, 255, 0.1); bottom: -10%; right: -10%; }
 
         .container {
             position: relative;
@@ -56,7 +57,7 @@
             padding: 12px;
             margin-bottom: 20px;
             background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(0, 242, 255, 0.3);
+            border: 1px solid rgba(138, 43, 226, 0.3);
             border-radius: 8px;
             color: #fff;
             box-sizing: border-box;
@@ -65,8 +66,8 @@
         }
 
         input:focus { 
-            border-color: var(--primary-cyan); 
-            box-shadow: 0 0 10px rgba(0,242,255,0.2); 
+            border-color: var(--primary-purple); 
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3); 
         }
 
         .btn {
@@ -81,15 +82,16 @@
             margin-bottom: 10px;
         }
 
-        .btn-login { background: var(--primary-cyan); color: #000; }
-        .btn-logout { background: var(--logout-red); color: #fff; }
-        .btn-cancel { background: transparent; color: #fff; border: 1px solid #555; }
+        /* Update Warna Tombol */
+        .btn-login { background: var(--primary-purple); color: #fff; }
+        .btn-cancel { background: var(--danger-red); color: #fff; }
+        .btn-logout { background: transparent; border: 1px solid #555; color: #fff; }
 
         .btn:hover { opacity: 0.8; transform: translateY(-2px); }
 
         .hidden { display: none; }
         #profile-info { 
-            color: var(--primary-cyan); 
+            color: var(--accent-cyan); 
             font-size: 1.2em; 
             margin-bottom: 20px; 
             font-weight: bold;
@@ -121,7 +123,6 @@
         class AuthSystem {
             constructor() {
                 this.dbKey = 'user_session';
-                // Data User (Database Sederhana)
                 this.users = [
                     { name: "vera", pass: "vera123" },
                     { name: "asta", pass: "asta456" }
@@ -133,17 +134,15 @@
                 const uInput = document.getElementById('user-input').value.trim();
                 const pInput = document.getElementById('pass-input').value;
 
-                // Cari user yang cocok
                 const user = this.users.find(x => x.name.toLowerCase() === uInput.toLowerCase() && x.pass === pInput);
 
                 if (user) {
-                    // Alert Berhasil
+                    // Alert Berhasil Sesuai Request
                     alert(`Hi, ${user.name} selamat anda berhasil login.`);
-                    
                     localStorage.setItem(this.dbKey, JSON.stringify(user));
                     this.showDashboard(user.name);
                 } else {
-                    // Alert Gagal (Menggunakan input username agar personal)
+                    // Alert Gagal Sesuai Request
                     const displayName = uInput ? uInput : "User";
                     alert(`Mohon maaf ${displayName} anda gagal login.`);
                 }
@@ -174,7 +173,6 @@
             }
         }
 
-        // Inisialisasi Objek AuthSystem
         const authApp = new AuthSystem();
     </script>
 </body>
