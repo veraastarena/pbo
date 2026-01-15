@@ -23,7 +23,6 @@
             position: relative;
         }
 
-        /* Elemen Dekorasi untuk Efek Blur Latar Belakang */
         .orb {
             position: absolute;
             width: 500px;
@@ -35,12 +34,11 @@
         .orb-1 { background: rgba(0, 242, 255, 0.15); top: -10%; left: -10%; }
         .orb-2 { background: rgba(255, 204, 0, 0.1); bottom: -10%; right: -10%; }
 
-        /* Glassmorphism Box */
         .container {
             position: relative;
             z-index: 10;
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(30px); /* Efek Blur Kaca */
+            backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             padding: 40px;
             border-radius: 24px;
@@ -66,7 +64,6 @@
 
         input:focus { border-color: var(--primary-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
 
-        /* Tombol Sesuai Ketentuan UX Soal UAS */
         .btn {
             width: 100%;
             padding: 12px;
@@ -79,8 +76,8 @@
             margin-bottom: 10px;
         }
 
-        .btn-login { background: var(--primary-cyan); color: #000; [cite_start]} /* Warna Positif [cite: 33] */
-        .btn-logout { background: var(--logout-red); color: #fff; [cite_start]} /* Warna Berbeda [cite: 34] */
+        .btn-login { background: var(--primary-cyan); color: #000; }
+        .btn-logout { background: var(--logout-red); color: #fff; }
         .btn-cancel { background: transparent; color: #fff; border: 1px solid #555; }
 
         .btn:hover { opacity: 0.8; transform: translateY(-2px); }
@@ -111,7 +108,6 @@
     </div>
 
     <script>
-        [cite_start]// Implementasi Class OOP [cite: 23, 26]
         class AuthSystem {
             constructor() {
                 this.dbKey = 'user_session';
@@ -122,7 +118,6 @@
                 this.checkSession();
             }
 
-            [cite_start]// Method Login [cite: 29, 36]
             login() {
                 const u = document.getElementById('user-input').value;
                 const p = document.getElementById('pass-input').value;
@@ -130,17 +125,16 @@
                 const user = this.users.find(x => x.name.toLowerCase() === u.toLowerCase() && x.pass === p);
 
                 if (user) {
-                    localStorage.setItem(this.dbKey, JSON.stringify(user)); [cite_start]// Simpan session [cite: 18]
+                    localStorage.setItem(this.dbKey, JSON.stringify(user));
                     this.showDashboard(user.name);
                 } else {
-                    alert("Login Gagal! Username atau password salah."); [cite_start]// Alert sesuai soal [cite: 38]
+                    alert("Login Gagal! Username atau password salah.");
                 }
             }
 
-            [cite_start]// Method Logout [cite: 43]
             logout() {
-                localStorage.removeItem(this.dbKey); [cite_start]// Hapus session [cite: 44]
-                location.reload(); [cite_start]// Kembali ke halaman login [cite: 45]
+                localStorage.removeItem(this.dbKey);
+                location.reload();
             }
 
             checkSession() {
@@ -154,7 +148,7 @@
             showDashboard(name) {
                 document.getElementById('login-view').classList.add('hidden');
                 document.getElementById('profile-view').classList.remove('hidden');
-                document.getElementById('profile-info').innerText = `Selamat Datang, ${name}`; [cite_start]// Menampilkan username [cite: 42]
+                document.getElementById('profile-info').innerText = `Selamat Datang, ${name}`;
             }
 
             clear() {
@@ -163,7 +157,6 @@
             }
         }
 
-        [cite_start]// Instansiasi Object [cite: 28]
         const authApp = new AuthSystem();
     </script>
 </body>
