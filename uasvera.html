@@ -3,225 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Login OOP - Ultra Glass Edition</title>
+    <title>UAS PBO - Future Login System</title>
     <style>
         :root {
-            --primary-cyan: #00f2ff;
-            --secondary-yellow: #ffcc00;
-            --dark-bg: #0a192f;
+            --primary-purple: #8a2be2; /* Warna Ungu Login */
+            --danger-red: #ff4b2b;    /* Warna Merah Cancel */
+            --bg-dark: #060b23;
+            --accent-cyan: #00f2ff;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: var(--dark-bg);
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            height: 100vh;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: white;
             overflow: hidden;
             position: relative;
         }
 
-        /* --- BACKGROUND DECORATION (FOR BLUR EFFECT) --- */
-        /* Lingkaran cahaya di belakang agar efek blur kaca terlihat nyata */
-        .bg-glow {
+        .orb {
             position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(0, 242, 255, 0.2) 0%, transparent 70%);
+            width: 500px;
+            height: 500px;
             border-radius: 50%;
+            filter: blur(80px);
             z-index: 1;
-            filter: blur(50px);
         }
-        .glow-1 { top: 10%; left: 20%; }
-        .glow-2 { bottom: 10%; right: 20%; background: radial-gradient(circle, rgba(255, 204, 0, 0.1) 0%, transparent 70%); }
+        .orb-1 { background: rgba(138, 43, 226, 0.2); top: -10%; left: -10%; }
+        .orb-2 { background: rgba(0, 242, 255, 0.1); bottom: -10%; right: -10%; }
 
-        /* Grid Sirkuit */
-        .circuit-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(circle at 2px 2px, rgba(0, 242, 255, 0.05) 1px, transparent 0);
-            background-size: 50px 50px;
-            z-index: 2;
-        }
-
-        /* --- LOGIN BOX (GLASSMORPHISM) --- */
-        .login-box {
+        .container {
             position: relative;
-            z-index: 10; /* Pastikan di atas background */
-            background: rgba(255, 255, 255, 0.05); /* Transparan tipis */
-            backdrop-filter: blur(25px); /* EFEK BLUR UTAMA */
-            -webkit-backdrop-filter: blur(25px);
-            padding: 50px 40px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             width: 380px;
             text-align: center;
         }
 
-        h2 { 
-            margin-bottom: 5px; 
-            font-size: 2em;
-            letter-spacing: 1px;
-            text-shadow: 0 0 15px var(--primary-cyan);
-        }
-
-        .subtitle {
-            font-size: 0.85em;
-            color: #888;
-            margin-bottom: 35px;
-            display: block;
-            text-transform: uppercase;
-        }
-
+        h2 { color: #fff; margin-bottom: 30px; letter-spacing: 3px; text-transform: uppercase; }
+        
         input {
             width: 100%;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            border-radius: 8px;
-            color: white;
+            padding: 14px;
+            margin-bottom: 20px;
+            background: #eef2f7;
+            border: none;
+            border-radius: 12px;
+            color: #333;
             box-sizing: border-box;
             outline: none;
-            transition: 0.4s;
-            margin-bottom: 20px;
+            font-size: 16px;
         }
 
-        input:focus {
-            border-color: var(--primary-cyan);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        /* --- BUTTONS --- */
-        .btn-custom {
+        .btn {
             width: 100%;
             padding: 14px;
             border: none;
+            border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 15px;
-            clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
             transition: 0.3s;
-            display: block;
-            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-size: 14px;
         }
 
-        .btn-login {
-            background-color: #000;
-            color: white;
-            border-left: 4px solid var(--primary-cyan);
-        }
+        .btn-login { background: var(--primary-purple); color: #fff; }
+        .btn-cancel { background: var(--danger-red); color: #fff; }
+        .btn-logout { background: transparent; border: 1px solid #555; color: #fff; }
 
-        .btn-cancel {
-            background-color: var(--secondary-yellow);
-            color: black;
-        }
-
-        .btn-custom:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.2);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-        }
-
+        .btn:hover { opacity: 0.9; transform: scale(1.02); }
         .hidden { display: none; }
-
-        #msg-success { 
-            color: var(--primary-cyan); 
-            border: 1px solid var(--primary-cyan);
-            padding: 20px;
-            border-radius: 12px;
-            background: rgba(0, 242, 255, 0.1);
-            line-height: 1.6;
-        }
-
-        /* Hiasan Sudut */
-        .corner {
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            border: 2px solid var(--primary-cyan);
-            opacity: 0.5;
-        }
-        .tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
-        .br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+        #profile-info { color: var(--accent-cyan); font-size: 1.3em; margin-bottom: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="circuit-overlay"></div>
-    <div class="bg-glow glow-1"></div>
-    <div class="bg-glow glow-2"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-    <div class="login-box">
-        <div class="corner tl"></div>
-        <div class="corner br"></div>
-
-        <div id="view-login">
-            <h2>LOGIN SYSTEM</h2>
-            <span class="subtitle">Future OOP Authentication</span>
-            
-            <input type="text" id="user-field" placeholder="Username (Vera/Asta/Rena)">
-            <input type="password" id="pass-field" placeholder="Password">
-            
-            <button class="btn-custom btn-login" onclick="db_user.prosesLogin()">ACCESS SYSTEM</button>
-            <button class="btn-custom btn-cancel" onclick="db_user.bersihkanForm()">RESET</button>
+    <div class="container">
+        <div id="login-view">
+            <h2>SELAMAT DATANG</h2>
+            <input type="text" id="user-input" placeholder="Username">
+            <input type="password" id="pass-input" placeholder="Password">
+            <button class="btn btn-login" onclick="authApp.login()">Log In</button>
+            <button class="btn btn-cancel" onclick="authApp.clear()">Cancel</button>
         </div>
 
-        <div id="view-dashboard" class="hidden">
-            <p id="msg-success"></p>
-            <button class="btn-custom btn-login" style="margin-top: 20px;" onclick="location.reload()">LOGOUT</button>
+        <div id="profile-view" class="hidden">
+            <h2>PROFIL</h2>
+            <div id="profile-info"></div>
+            <button class="btn btn-logout" onclick="authApp.logout()">Log Out</button>
         </div>
     </div>
 
     <script>
-        const AppAuth = class {
+        class AuthSystem {
             constructor() {
-                this.storageKey = 'database_pengguna';
-                this.dataAwal = [
+                this.sessionKey = 'user_session';
+                const storedUsers = localStorage.getItem('database_pengguna');
+                
+                // Daftar user termasuk rena (rena789)
+                this.users = storedUsers ? JSON.parse(storedUsers) : [
                     { nama: "vera", sandi: "vera123" },
                     { nama: "asta", sandi: "asta456" },
                     { nama: "rena", sandi: "rena789" }
                 ];
-                this.init();
+                this.checkSession();
             }
 
-            init() {
-                if (!localStorage.getItem(this.storageKey)) {
-                    localStorage.setItem(this.storageKey, JSON.stringify(this.dataAwal));
-                }
-            }
+            login() {
+                const uInput = document.getElementById('user-input').value.trim();
+                const pInput = document.getElementById('pass-input').value;
 
-            prosesLogin() {
-                const u = document.getElementById('user-field').value;
-                const p = document.getElementById('pass-field').value;
-                const listUser = JSON.parse(localStorage.getItem(this.storageKey));
-                
-                const userKetemu = listUser.find(item => item.nama.toLowerCase() === u.toLowerCase());
+                const user = this.users.find(x => x.nama.toLowerCase() === uInput.toLowerCase() && x.sandi === pInput);
 
-                if (userKetemu && userKetemu.sandi === p) {
-                    document.getElementById('view-login').classList.add('hidden');
-                    document.getElementById('view-dashboard').classList.remove('hidden');
-                    document.getElementById('msg-success').innerHTML = <strong>ACCESS GRANTED</strong><br>Welcome back, Agent ${userKetemu.nama.toUpperCase()}. System is now ready.;
+                if (user) {
+                    alert(`Hi, ${user.nama} selamat anda berhasil login.`);
+                    localStorage.setItem(this.sessionKey, JSON.stringify(user));
+                    this.showDashboard(user.nama);
                 } else {
-                    alert(ACCESS DENIED! Invalid credentials.);
+                    const displayName = uInput ? uInput : "User";
+                    alert(`Mohon maaf ${displayName} anda gagal login.`);
                 }
             }
 
-            bersihkanForm() {
-                document.getElementById('user-field').value = '';
-                document.getElementById('pass-field').value = '';
+            logout() {
+                localStorage.removeItem(this.sessionKey);
+                location.reload();
             }
-        };
 
-        const db_user = new AppAuth();
+            checkSession() {
+                const session = localStorage.getItem(this.sessionKey);
+                if (session) {
+                    const userData = JSON.parse(session);
+                    this.showDashboard(userData.nama);
+                }
+            }
 
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') db_user.prosesLogin();
-        });
+            showDashboard(name) {
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('profile-view').classList.remove('hidden');
+                document.getElementById('profile-info').innerText = `Selamat Datang, ${name}`;
+            }
+
+            clear() {
+                document.getElementById('user-input').value = '';
+                document.getElementById('pass-input').value = '';
+            }
+        }
+
+        const authApp = new AuthSystem();
     </script>
 </body>
 </html>
