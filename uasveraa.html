@@ -3,168 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UAS PBO - Future Login System</title>
+    <title>UAS PBO - Aplikasi Login</title>
     <style>
-        :root {
-            --primary-cyan: #00f2ff;
-            --logout-red: #ff4b2b;
-            --bg-dark: #060b23;
-        }
-
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg-dark);
-            height: 100vh;
-            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            position: relative;
+            height: 100vh;
+            margin: 0;
         }
-
-        /* Elemen Dekorasi untuk Efek Blur Latar Belakang */
-        .orb {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: 1;
-        }
-        .orb-1 { background: rgba(0, 242, 255, 0.15); top: -10%; left: -10%; }
-        .orb-2 { background: rgba(255, 204, 0, 0.1); bottom: -10%; right: -10%; }
-
-        /* Glassmorphism Box */
-        .container {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(30px); /* Efek Blur Kaca */
-            -webkit-backdrop-filter: blur(30px);
+        .login-box {
+            background: #ffffff;
             padding: 40px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             width: 350px;
             text-align: center;
         }
-
-        h2 { color: #fff; margin-bottom: 30px; letter-spacing: 2px; }
-        
+        h2 { margin-bottom: 25px; color: #333; }
         input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 20px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(0, 242, 255, 0.3);
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            color: #fff;
             box-sizing: border-box;
-            outline: none;
         }
-
-        input:focus { border-color: var(--primary-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
-
-        /* Tombol Sesuai Ketentuan UX Soal UAS */
+        [cite_start]/* Tombol sesuai instruksi UX UAS [cite: 33, 34] */
         .btn {
             width: 100%;
             padding: 12px;
             border: none;
             border-radius: 8px;
-            font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
+            font-weight: bold;
             margin-bottom: 10px;
         }
-
-        .btn-login { background: var(--primary-cyan); color: #000; [cite_start]} /* Warna Positif [cite: 33] */
-        .btn-logout { background: var(--logout-red); color: #fff; [cite_start]} /* Warna Berbeda [cite: 34] */
-        .btn-cancel { background: transparent; color: #fff; border: 1px solid #555; }
-
-        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
-
+        .btn-login { background-color: #007bff; color: white; } /* Biru Positif */
+        .btn-logout { background-color: #dc3545; color: white; } /* Merah */
+        .btn-cancel { background-color: #ffcc00; color: black; }
         .hidden { display: none; }
-        #profile-info { color: var(--primary-cyan); font-size: 1.2em; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-
-    <div class="container">
-        <div id="login-view">
-            <h2>LOGIN</h2>
-            <input type="text" id="user-input" placeholder="Username">
-            <input type="password" id="pass-input" placeholder="Password">
-            <button class="btn btn-login" onclick="authApp.login()">Log In</button>
-            <button class="btn btn-cancel" onclick="authApp.clear()">Cancel</button>
+    <div class="login-box">
+        <div id="view-login">
+            <h2>Login</h2>
+            <input type="text" id="user-field" placeholder="Username (Contoh: vera)">
+            <input type="password" id="pass-field" placeholder="Password">
+            <button class="btn btn-login" onclick="appAuth.prosesLogin()">Log In</button>
+            <button class="btn btn-cancel" onclick="appAuth.bersihkanForm()">Cancel</button>
         </div>
 
-        <div id="profile-view" class="hidden">
-            <h2>PROFIL</h2>
-            <div id="profile-info"></div>
-            <button class="btn btn-logout" onclick="authApp.logout()">Log Out</button>
+        <div id="view-profile" class="hidden">
+            <h2>Halaman Profil</h2>
+            <p id="msg-profile" style="font-weight: bold; color: #007bff;"></p>
+            <button class="btn btn-logout" onclick="appAuth.prosesLogout()">Log Out</button>
         </div>
     </div>
 
     <script>
-        [cite_start]// Implementasi Class OOP [cite: 23, 26]
-        class AuthSystem {
+        /**
+         * [cite_start]Implementasi OOP sesuai Soal UAS [cite: 23, 24]
+         */
+        class LoginSystem {
             constructor() {
-                this.dbKey = 'user_session';
-                this.users = [
-                    { name: "vera", pass: "vera123" },
-                    { name: "asta", pass: "asta456" }
-                ];
+                this.sessionKey = 'status_login';
+                this.dbKey = 'database_user';
+                this.initData(); // Menyiapkan data di LocalStorage
                 this.checkSession();
             }
 
-            [cite_start]// Method Login [cite: 29, 36]
-            login() {
-                const u = document.getElementById('user-input').value;
-                const p = document.getElementById('pass-input').value;
-
-                const user = this.users.find(x => x.name.toLowerCase() === u.toLowerCase() && x.pass === p);
-
-                if (user) {
-                    localStorage.setItem(this.dbKey, JSON.stringify(user)); [cite_start]// Simpan session [cite: 18]
-                    this.showDashboard(user.name);
-                } else {
-                    alert("Login Gagal! Username atau password salah."); [cite_start]// Alert sesuai soal [cite: 38]
+            [cite_start]// Inisialisasi data ke LocalStorage sesuai soal [cite: 18, 19]
+            initData() {
+                const dataAwal = [
+                    { nama: "vera", sandi: "vera123" },
+                    { nama: "asta", sandi: "asta456" }
+                ];
+                if (!localStorage.getItem(this.dbKey)) {
+                    localStorage.setItem(this.dbKey, JSON.stringify(dataAwal));
                 }
             }
 
-            [cite_start]// Method Logout [cite: 43]
-            logout() {
-                localStorage.removeItem(this.dbKey); [cite_start]// Hapus session [cite: 44]
-                location.reload(); [cite_start]// Kembali ke halaman login [cite: 45]
+            prosesLogin() {
+                const u = document.getElementById('user-field').value.toLowerCase();
+                const p = document.getElementById('pass-field').value;
+                
+                [cite_start]// Mengambil data dari LocalStorage (Simulasi File I/O) [cite: 18]
+                const listUser = JSON.parse(localStorage.getItem(this.dbKey));
+                const ditemukan = listUser.find(user => user.nama === u && user.sandi === p);
+
+                if (ditemukan) {
+                    localStorage.setItem(this.sessionKey, JSON.stringify(ditemukan));
+                    this.tampilkanHalamanProfil(ditemukan.nama);
+                } else {
+                    alert("mohon maaf, kamu gagal login."); [cite_start]// Sesuai instruksi soal [cite: 38]
+                }
+            }
+
+            prosesLogout() {
+                localStorage.removeItem(this.sessionKey); [cite_start]// Menghapus session [cite: 44]
+                location.reload(); 
             }
 
             checkSession() {
-                const session = localStorage.getItem(this.dbKey);
+                const session = localStorage.getItem(this.sessionKey);
                 if (session) {
-                    const userData = JSON.parse(session);
-                    this.showDashboard(userData.name);
+                    const user = JSON.parse(session);
+                    this.tampilkanHalamanProfil(user.nama);
                 }
             }
 
-            showDashboard(name) {
-                document.getElementById('login-view').classList.add('hidden');
-                document.getElementById('profile-view').classList.remove('hidden');
-                document.getElementById('profile-info').innerText = `Selamat Datang, ${name}`; [cite_start]// Menampilkan username [cite: 42]
+            tampilkanHalamanProfil(username) {
+                document.getElementById('view-login').classList.add('hidden');
+                document.getElementById('view-profile').classList.remove('hidden');
+                document.getElementById('msg-profile').innerText = `Selamat Datang, ${username}!`;
             }
 
-            clear() {
-                document.getElementById('user-input').value = '';
-                document.getElementById('pass-input').value = '';
+            bersihkanForm() {
+                document.getElementById('user-field').value = '';
+                document.getElementById('pass-field').value = '';
             }
         }
 
-        [cite_start]// Instansiasi Object [cite: 28]
-        const authApp = new AuthSystem();
+        [cite_start]// Membuat Object dari Class [cite: 28]
+        const appAuth = new LoginSystem();
     </script>
 </body>
 </html>
